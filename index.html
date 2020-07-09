@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>Display Webcam Stream</title>
- 
-<style>	
-body {
-	margin: 0;
-}
-video#output {
-	width: 100vw; 
-	height: 56.25vw; /* height:width ratio = 9/16 = .5625  */
-	max-height: 100vh;
-	max-width: 177.78vh; /* 16/9 = 1.778 */
-}
-	
-</style>
+	<meta charset="utf-8">
+	<title>Video Capture</title>
+
+	<style>
+		body {
+			margin: 0;
+		}
+
+		video#output {
+			width: 100vw; 
+			height: 56.25vw; /* height:width ratio = 9/16 = .5625  */
+			max-height: 100vh;
+			max-width: 177.78vh; /* 16/9 = 1.778 */
+		}
+	</style>
 </head>
 <body>
-	<video autoplay="true" id="output"></video>
+	<video controls autoplay id="output"></video>
 	<script>
 		var video = document.querySelector("video#output");
 		var constraints = {
-			audio: { 
+			audio: {
 				deviceId: "019a9477e556c36dfa04b3749a7973d8e1a72fa8bb9c76a55982add8033dc2eb",
 				autoGainControl: false,
 				echoCancellation: false,
@@ -40,12 +40,12 @@ video#output {
 		};
 
 		if (navigator.mediaDevices.getUserMedia) {
-		  navigator.mediaDevices.getUserMedia(constraints)
+			navigator.mediaDevices.getUserMedia(constraints)
 			.then(function(stream) {
 			  video.srcObject = stream;
 			})
 			.catch(function(e) {
-			  console.log("Something went wrong!");
+			  console.log("Unable to start web video/audio");
 			});
 		}
 	</script>
