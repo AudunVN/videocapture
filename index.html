@@ -23,6 +23,7 @@ video#output {
 		var video = document.querySelector("video#output");
 		var constraints = {
 			audio: { 
+				deviceId: "019a9477e556c36dfa04b3749a7973d8e1a72fa8bb9c76a55982add8033dc2eb",
 				autoGainControl: false,
 				echoCancellation: false,
 				noiseSuppression: false,
@@ -31,7 +32,11 @@ video#output {
 				sampleSize: 16,
 				channelCount: 2
 			},
-			video: { width: 1280, height: 720 }
+			video: {
+				deviceId: "6268fd71d7e9d349e1e326680f0fb71b0ea5f9797f722057a25eff74dcf5df07",
+				width: 1280,
+				height: 720
+			}
 		};
 
 		if (navigator.mediaDevices.getUserMedia) {
