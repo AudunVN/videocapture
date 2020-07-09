@@ -4,39 +4,30 @@
 <meta charset="utf-8">
 <title>Display Webcam Stream</title>
  
-<style>
-#container {
-	margin: 0px auto;
-	width: 500px;
-	height: 375px;
-	border: 10px #333 solid;
+<style>	
+video#output {
+    width: 100vw; 
+    height: 56.25vw; /* height:width ratio = 9/16 = .5625  */
+    max-height: 100vh;
+    max-width: 177.78vh; /* 16/9 = 1.778 */
 }
-#videoElement {
-	width: 500px;
-	height: 375px;
-	background-color: #666;
-}
+	
 </style>
 </head>
- 
 <body>
-<div id="container">
-	<video autoplay="true" id="videoElement">
-	
-	</video>
-</div>
-<script>
-var video = document.querySelector("#videoElement");
+	<video autoplay="true" id="output"></video>
+	<script>
+		var video = document.querySelector("video#output");
 
-if (navigator.mediaDevices.getUserMedia) {
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(function (stream) {
-      video.srcObject = stream;
-    })
-    .catch(function (err0r) {
-      console.log("Something went wrong!");
-    });
-}
-</script>
+		if (navigator.mediaDevices.getUserMedia) {
+		  navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+			.then(function (stream) {
+			  video.srcObject = stream;
+			})
+			.catch(function (err0r) {
+			  console.log("Something went wrong!");
+			});
+		}
+	</script>
 </body>
 </html>
