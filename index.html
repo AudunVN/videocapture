@@ -18,13 +18,17 @@ video#output {
 	<video autoplay="true" id="output"></video>
 	<script>
 		var video = document.querySelector("video#output");
+		var constraints = {
+			audio: true,
+			video: { width: 1280, height: 720 }
+		};
 
 		if (navigator.mediaDevices.getUserMedia) {
-		  navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-			.then(function (stream) {
+		  navigator.mediaDevices.getUserMedia(constraints)
+			.then(function(stream) {
 			  video.srcObject = stream;
 			})
-			.catch(function (err0r) {
+			.catch(function(e) {
 			  console.log("Something went wrong!");
 			});
 		}
