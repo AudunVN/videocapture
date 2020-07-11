@@ -21,6 +21,7 @@
 	<video controls autoplay id="output"></video>
 	<script>
 		var video = document.querySelector("video#output");
+		
 		var constraints = {
 			audio: {
 				deviceId: "019a9477e556c36dfa04b3749a7973d8e1a72fa8bb9c76a55982add8033dc2eb",
@@ -38,16 +39,32 @@
 				height: 720
 			}
 		};
-
-		if (navigator.mediaDevices.getUserMedia) {
-			navigator.mediaDevices.getUserMedia(constraints)
-			.then(function(stream) {
-			  video.srcObject = stream;
-			})
-			.catch(function(e) {
-			  console.log("Unable to start web video/audio");
-			});
-		}
+		
+		var devices = navigator.mediaDevices.enumerateDevices();
+		
+		devices.then(function(devices){
+			for (var i = 0; i < devices.length; i++) {
+				var device = devices[i];
+				
+				if (device.label.indexOf("USB Digital Audio") != -1) {
+					constraints.audio.deviceId = device.deviceId;
+				}
+				
+				if (device.label.indexOf("USB Video") != -1) {
+					constraints.video.deviceId = device.deviceId;
+				}
+			}
+			
+			if (navigator.mediaDevices.getUserMedia) {
+				navigator.mediaDevices.getUserMedia(constraints)
+				.then(function(stream) {
+				  video.srcObject = stream;
+				})
+				.catch(function(e) {
+				  console.log("Unable to start web video/audio");
+				});
+			}
+		 });
 	</script>
 </body>
 </html>
