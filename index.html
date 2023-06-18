@@ -8,68 +8,90 @@
 		body {
 			margin: 0;
 			background: #000;
+			overflow-x: hidden;
 		}
 
 		video#output {
 			width: 100vw; 
-			height: 56.25vw; /* height:width ratio = 9/16 = .5625  */
+			height: 56.25vw; /* height:width ratio = 9/16 = .5625 */
 			max-height: 100vh;
 			max-width: 177.78vh; /* 16/9 = 1.778 */
+			overflow: hidden;
 		}
 		
 		video#output:focus {
 			outline: none;
 		}
+
+		.stream-controls {
+			padding: 1em;
+		}
 	</style>
 </head>
 <body>
 	<video controls autoplay id="output"></video>
+	<div class="stream-controls">
+		<select id="set-device"></select>
+		<button id="get-devices">Switch Stream</button>
+	</div>
+
 	<script>
-		var video = document.querySelector("video#output");
-		
-		var constraints = {
-			audio: {
-				deviceId: "019a9477e556c36dfa04b3749a7973d8e1a72fa8bb9c76a55982add8033dc2eb",
-				autoGainControl: false,
-				echoCancellation: false,
-				noiseSuppression: false,
-				volume: 0.5,
-				sampleRate: 44100,
-				sampleSize: 16,
-				channelCount: 2
-			},
-			video: {
-				deviceId: "6268fd71d7e9d349e1e326680f0fb71b0ea5f9797f722057a25eff74dcf5df07",
-				width: 1280,
-				height: 720
-			}
-		};
-		
-		var devices = navigator.mediaDevices.enumerateDevices();
-		
-		devices.then(function(devices){
-			for (var i = 0; i < devices.length; i++) {
-				var device = devices[i];
-				
-				if (device.label.indexOf("USB Digital Audio") != -1) {
-					constraints.audio.deviceId = device.deviceId;
+		let currentStream;
+		const video = document.querySelector("video#output");
+		const getDevicesButton = document.querySelector("button#get-devices");
+		const deviceSelect = document.querySelector("select#set-device");
+
+		function stopMediaTracks(stream) {
+			stream.getTracks().forEach(track => {
+				track.stop();
+			});
+		}
+
+		function renderDevices(mediaDevices) {
+			deviceSelect.innerHTML = "";
+			deviceSelect.appendChild(document.createElement('option'));
+			let count = 1;
+
+			mediaDevices.forEach(mediaDevice => {
+				if (mediaDevice.kind === 'videoinput') {
+					const option = document.createElement('option');
+					option.value = mediaDevice.deviceId;
+					const label = mediaDevice.label || `Device ${count++}`;
+					const textNode = document.createTextNode(label);
+					option.appendChild(textNode);
+					deviceSelect.appendChild(option);
 				}
-				
-				if (device.label.indexOf("USB Video") != -1) {
-					constraints.video.deviceId = device.deviceId;
-				}
+			});
+		}
+
+		getDevicesButton.addEventListener('click', event => {
+			const constraints = {
+				video: true,
+				audio: true
+			};
+
+			if (typeof currentStream !== 'undefined') {
+				stopMediaTracks(currentStream);
 			}
-			
-			if (navigator.mediaDevices.getUserMedia) {
-				navigator.mediaDevices.getUserMedia(constraints)
-				.then(function(stream) {
-				  video.srcObject = stream;
-				})
-				.catch(function(e) {
-				  console.log("Unable to start web video/audio");
-				});
+
+			if (deviceSelect.value !== "") {
+				constraints.deviceId = { exact: deviceSelect.value };
 			}
-		 });
+
+			navigator.mediaDevices
+			.getUserMedia(constraints)
+			.then(stream => {
+				currentStream = stream;
+				video.srcObject = stream;
+				return navigator.mediaDevices.enumerateDevices();
+			})
+			.then(renderDevices)
+			.catch(error => {
+				console.error(error);
+			});
+		});
+		
+		navigator.mediaDevices.enumerateDevices().then(renderDevices);
 	</script>
 </body>
 </html>
