@@ -52,6 +52,8 @@
 			deviceSelect.appendChild(document.createElement('option'));
 			let count = 1;
 
+			console.log(mediaDevices);
+
 			mediaDevices.forEach(mediaDevice => {
 				if (mediaDevice.kind === 'videoinput') {
 					const option = document.createElement('option');
@@ -66,8 +68,7 @@
 
 		getDevicesButton.addEventListener('click', event => {
 			const constraints = {
-				video: true,
-				audio: true
+				video: true
 			};
 
 			if (typeof currentStream !== 'undefined') {
@@ -75,6 +76,7 @@
 			}
 
 			if (deviceSelect.value !== "") {
+				console.log(deviceSelect.value);
 				constraints.deviceId = { exact: deviceSelect.value };
 			}
 
