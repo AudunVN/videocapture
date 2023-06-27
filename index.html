@@ -18,7 +18,7 @@
 			max-width: 177.78vh; /* 16/9 = 1.778 */
 			overflow: hidden;
 		}
-		
+
 		video#output:focus {
 			outline: none;
 		}
@@ -68,7 +68,8 @@
 
 		getDevicesButton.addEventListener('click', event => {
 			const constraints = {
-				video: true
+				video: true,
+				audio: true
 			};
 
 			if (typeof currentStream !== 'undefined') {
@@ -92,7 +93,7 @@
 				console.error(error);
 			});
 		});
-		
+
 		navigator.mediaDevices.enumerateDevices().then(renderDevices);
 	</script>
 </body>
