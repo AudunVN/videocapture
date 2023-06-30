@@ -68,8 +68,21 @@
 
 		getDevicesButton.addEventListener('click', event => {
 			const constraints = {
-				video: true,
-				audio: true
+				video: {
+					width: {ideal: 1280},
+					height: {ideal: 720},
+					aspectRatio: 16 / 9,
+					advanced: [{ frameRate: 60 }, { frameRate: 30 }],
+				},
+				audio: {
+					autoGainControl: false,
+					echoCancellation: false,
+					noiseSuppression: false,
+					volume: 0.5,
+					sampleRate: 44100,
+					sampleSize: 16,
+					channelCount: 2
+				}
 			};
 
 			if (typeof currentStream !== 'undefined') {
